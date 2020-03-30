@@ -1,4 +1,4 @@
-package com.github.codedrinker.usms;
+package com.github.developer.weapons.usms;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

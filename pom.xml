@@ -11,7 +11,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>com.github.codedrinker</groupId>
+    <groupId>com.github.developer.weapons</groupId>
     <artifactId>usms-spring-boot-starter</artifactId>
     <version>1.0-SNAPSHOT</version>
     <dependencies>

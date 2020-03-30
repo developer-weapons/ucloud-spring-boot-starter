@@ -1,4 +1,4 @@
-package com.github.codedrinker.usms;
+package com.github.developer.weapons.usms;
 
 import cn.ucloud.common.pojo.Account;
 import cn.ucloud.usms.client.DefaultUSMSClient;
@@ -6,8 +6,8 @@ import cn.ucloud.usms.client.USMSClient;
 import cn.ucloud.usms.model.SendUSMSMessageParam;
 import cn.ucloud.usms.model.SendUSMSMessageResult;
 import cn.ucloud.usms.pojo.USMSConfig;
-import com.github.codedrinker.usms.model.USMSMessage;
-import com.github.codedrinker.usms.model.USMSResult;
+import com.github.developer.weapons.usms.model.USMSMessage;
+import com.github.developer.weapons.usms.model.USMSResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
