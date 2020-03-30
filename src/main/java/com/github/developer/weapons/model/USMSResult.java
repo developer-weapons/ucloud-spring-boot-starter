@@ -1,4 +1,4 @@
-package com.github.developer.weapons.usms.model;
+package com.github.developer.weapons.model;
 
 import lombok.Data;
 
