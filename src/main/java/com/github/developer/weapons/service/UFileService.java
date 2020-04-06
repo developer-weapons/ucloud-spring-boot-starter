@@ -75,9 +75,10 @@ public class UFileService {
             }
             ObjectAuthorization objectAuthorization = new UfileObjectLocalAuthorization(uFileProperties.getPublicKey(), uFileProperties.getPrivateKey());
             ObjectConfig config = new ObjectConfig(uFileProperties.getUploadDomain());
+            String keyName = FileUtils.newUUIDFileName(fileName);
             PutObjectResultBean response = UfileClient.object(objectAuthorization, config)
                     .putObject(fileStream, mimeType)
-                    .nameAs( FileUtils.newUUIDFileName(fileName))
+                    .nameAs(keyName)
                     .toBucket(uFileProperties.getBucketName())
                     .setOnProgressListener((bytesWritten, contentLength) -> {
                     })
@@ -88,12 +89,12 @@ public class UFileService {
                         throw new RuntimeException("ucloud.ufile.expiresDuration is missing, eg. 1000.");
                     }
                     return UfileClient.object(objectAuthorization, new ObjectConfig(uFileProperties.getDownloadDomain()))
-                            .getDownloadUrlFromPrivateBucket(fileName, uFileProperties.getBucketName(), uFileProperties.getExpiresDuration())
+                            .getDownloadUrlFromPrivateBucket(keyName, uFileProperties.getBucketName(), uFileProperties.getExpiresDuration())
                             .createUrl();
 
                 } else {
                     return UfileClient.object(objectAuthorization, new ObjectConfig(uFileProperties.getDownloadDomain()))
-                            .getDownloadUrlFromPublicBucket(fileName, uFileProperties.getBucketName())
+                            .getDownloadUrlFromPublicBucket(keyName, uFileProperties.getBucketName())
                             .createUrl();
                 }
             } else {
