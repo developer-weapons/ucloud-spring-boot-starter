@@ -54,7 +54,6 @@ public class UFileService {
      * @return
      */
     public String upload(InputStream fileStream, String mimeType, String fileName) {
-        String newLocalFileName = null;
         try {
 
             if (uFileProperties.getPublicKey() == null) {
@@ -74,12 +73,11 @@ public class UFileService {
             if (uFileProperties.getDownloadDomain() == null) {
                 throw new RuntimeException("ucloud.ufile.downloadDomain is missing, eg. bucketname.cn-bj.ufileos.com.");
             }
-            newLocalFileName = FileUtils.newLocalFileName(fileName);
             ObjectAuthorization objectAuthorization = new UfileObjectLocalAuthorization(uFileProperties.getPublicKey(), uFileProperties.getPrivateKey());
             ObjectConfig config = new ObjectConfig(uFileProperties.getUploadDomain());
             PutObjectResultBean response = UfileClient.object(objectAuthorization, config)
                     .putObject(fileStream, mimeType)
-                    .nameAs(newLocalFileName)
+                    .nameAs( FileUtils.newUUIDFileName(fileName))
                     .toBucket(uFileProperties.getBucketName())
                     .setOnProgressListener((bytesWritten, contentLength) -> {
                     })
@@ -105,8 +103,6 @@ public class UFileService {
         } catch (Exception e) {
             log.error("upload error,{}", fileName, e);
             return null;
-        } finally {
-            FileUtils.deleteFile(new File(newLocalFileName));
         }
     }
 }
