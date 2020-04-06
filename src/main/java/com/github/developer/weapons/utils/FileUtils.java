@@ -55,7 +55,11 @@ public class FileUtils {
     }
 
     public static void deleteFile(File file) {
-        file.delete();
+        try {
+            file.delete();
+        } catch (Exception e) {
+            log.debug("FILE_UTILS_ERROR", e);
+        }
     }
 
     public static void main(String[] args) {
