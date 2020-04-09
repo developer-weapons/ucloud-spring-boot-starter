@@ -11,9 +11,16 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
+    <distributionManagement>
+        <repository>
+            <id>developer-weapons-repository</id>
+            <url>developer-weapons-repository</url>
+        </repository>
+    </distributionManagement>
+
     <groupId>com.github.developer.weapons</groupId>
     <artifactId>ucloud-spring-boot-starter</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
