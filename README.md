@@ -11,7 +11,7 @@
     </repository>
 </repositories>
 ```
-3. 引入对应的包版本
+2. 引入对应的包版本
 ```xml
 <dependency>
     <groupId>com.github.developer.weapons</groupId>
@@ -19,14 +19,14 @@
     <version>1.0.0</version>
 </dependency>
 ```
-4. 配置必备属性
+3. 配置必备属性
 ```sh
 spring.usms.publicKey=pk
 spring.usms.privateKey=pk
 spring.usms.projectId=id
 spring.usms.signContent=id
 ```
-5. 引入操作
+4. 引入操作
 ```java
 @Autowired
 private USMSService usmsService;
