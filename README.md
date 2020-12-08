@@ -36,5 +36,12 @@ message.setPhoneNumbers(Lists.newArrayList("PHONE"));
 message.setTemplateId("ID");
 message.setTemplateParams(Lists.newArrayList("PARAM"));
 usmsService.send(message);
-
 ```
+5 操作文件
+```java   
+@Autowired
+private UFileService uFileService;
+uFileService.upload("image url");
+uFileService.upload(new FileInputStream(new File("")),"mimeType","fileName");
+```
+

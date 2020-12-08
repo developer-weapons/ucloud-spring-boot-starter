@@ -10,11 +10,10 @@ import com.github.developer.weapons.config.USMSProperties;
 import com.github.developer.weapons.model.USMSMessage;
 import com.github.developer.weapons.model.USMSResult;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Slf4j
-public class USMSService implements InitializingBean {
+public class USMSService {
 
     @Autowired
     private USMSProperties usmsProperties;
@@ -22,6 +21,7 @@ public class USMSService implements InitializingBean {
     private USMSClient client;
 
     public USMSResult send(USMSMessage message) {
+        initProperties();
         SendUSMSMessageParam param = new SendUSMSMessageParam(message.getPhoneNumbers(), message.getTemplateId());
         param.setTemplateParams(message.getTemplateParams());
 
@@ -46,8 +46,8 @@ public class USMSService implements InitializingBean {
         return null;
     }
 
-    @Override
-    public void afterPropertiesSet() {
+    public void initProperties() {
+        if (client == null) return;
         if (usmsProperties.getPrivateKey() == null) {
             throw new RuntimeException("ucloud.usms.privateKey is missing");
         }
