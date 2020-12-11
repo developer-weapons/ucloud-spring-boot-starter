@@ -111,4 +111,55 @@ public class UFileService {
             return null;
         }
     }
+
+    /**
+     * 通过文件名转换离职
+     *
+     * @param fileName 文件名称
+     * @return
+     */
+    public UFileResult exchangeFileUrl(String fileName) {
+        try {
+
+            if (uFileProperties.getPublicKey() == null) {
+                throw new RuntimeException("ucloud.ufile.publicKey is missing.");
+            }
+
+            if (uFileProperties.getPrivateKey() == null) {
+                throw new RuntimeException("ucloud.ufile.privateKey is missing.");
+            }
+            if (uFileProperties.getUploadDomain() == null) {
+                throw new RuntimeException("ucloud.ufile.uploadDomain is missing, eg. bucketname.ufile.cn-north-04.ucloud.cn.");
+            }
+
+            if (uFileProperties.getBucketName() == null) {
+                throw new RuntimeException("ucloud.ufile.bucketName is missing.");
+            }
+            if (uFileProperties.getDownloadDomain() == null) {
+                throw new RuntimeException("ucloud.ufile.downloadDomain is missing, eg. bucketname.cn-bj.ufileos.com.");
+            }
+            UFileResult fileResult = new UFileResult();
+            ObjectAuthorization objectAuthorization = new UfileObjectLocalAuthorization(uFileProperties.getPublicKey(), uFileProperties.getPrivateKey());
+            if (uFileProperties.getBucketType() != null && StringUtils.equals(uFileProperties.getBucketType(), "private")) {
+                if (uFileProperties.getExpiresDuration() == null) {
+                    throw new RuntimeException("ucloud.ufile.expiresDuration is missing, eg. 1000.");
+                }
+
+                fileResult.setFileName(fileName);
+                fileResult.setFileUrl(UfileClient.object(objectAuthorization, new ObjectConfig(uFileProperties.getDownloadDomain()))
+                        .getDownloadUrlFromPrivateBucket(fileName, uFileProperties.getBucketName(), uFileProperties.getExpiresDuration())
+                        .createUrl());
+                return fileResult;
+            } else {
+                fileResult.setFileName(fileName);
+                fileResult.setFileUrl(UfileClient.object(objectAuthorization, new ObjectConfig(uFileProperties.getDownloadDomain()))
+                        .getDownloadUrlFromPublicBucket(fileName, uFileProperties.getBucketName())
+                        .createUrl());
+                return fileResult;
+            }
+        } catch (Exception e) {
+            log.error("upload error,{}", fileName, e);
+            return null;
+        }
+    }
 }
