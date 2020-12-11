@@ -6,6 +6,7 @@ import cn.ucloud.ufile.auth.ObjectAuthorization;
 import cn.ucloud.ufile.auth.UfileObjectLocalAuthorization;
 import cn.ucloud.ufile.bean.PutObjectResultBean;
 import com.github.developer.weapons.config.UFileProperties;
+import com.github.developer.weapons.model.UFileResult;
 import com.github.developer.weapons.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -32,17 +33,17 @@ public class UFileService {
      * @return
      * @throws FileNotFoundException
      */
-    public String upload(String url) {
+    public UFileResult upload(String url) {
         File newFile = FileUtils.newFile(url);
         assert newFile != null;
-        String uploadedFileName;
+        UFileResult fileResult;
         try {
-            uploadedFileName = upload(new FileInputStream(newFile), "image/png", newFile.getName());
+            fileResult = upload(new FileInputStream(newFile), "image/png", newFile.getName());
         } catch (FileNotFoundException e) {
             throw new RuntimeException("new file exception", e);
         }
         FileUtils.deleteFile(newFile);
-        return uploadedFileName;
+        return fileResult;
     }
 
     /**
@@ -53,7 +54,7 @@ public class UFileService {
      * @param fileName   文件名称
      * @return
      */
-    public String upload(InputStream fileStream, String mimeType, String fileName) {
+    public UFileResult upload(InputStream fileStream, String mimeType, String fileName) {
         try {
 
             if (uFileProperties.getPublicKey() == null) {
@@ -84,18 +85,22 @@ public class UFileService {
                     })
                     .execute();
             if (response != null && response.getRetCode() == 0) {
+                UFileResult fileResult = new UFileResult();
                 if (uFileProperties.getBucketType() != null && StringUtils.equals(uFileProperties.getBucketType(), "private")) {
                     if (uFileProperties.getExpiresDuration() == null) {
                         throw new RuntimeException("ucloud.ufile.expiresDuration is missing, eg. 1000.");
                     }
-                    return UfileClient.object(objectAuthorization, new ObjectConfig(uFileProperties.getDownloadDomain()))
+                    fileResult.setFileName(keyName);
+                    fileResult.setFileUrl(UfileClient.object(objectAuthorization, new ObjectConfig(uFileProperties.getDownloadDomain()))
                             .getDownloadUrlFromPrivateBucket(keyName, uFileProperties.getBucketName(), uFileProperties.getExpiresDuration())
-                            .createUrl();
-
+                            .createUrl());
+                    return fileResult;
                 } else {
-                    return UfileClient.object(objectAuthorization, new ObjectConfig(uFileProperties.getDownloadDomain()))
+                    fileResult.setFileName(keyName);
+                    fileResult.setFileUrl(UfileClient.object(objectAuthorization, new ObjectConfig(uFileProperties.getDownloadDomain()))
                             .getDownloadUrlFromPublicBucket(keyName, uFileProperties.getBucketName())
-                            .createUrl();
+                            .createUrl());
+                    return fileResult;
                 }
             } else {
                 log.error("upload error,{}", response);
